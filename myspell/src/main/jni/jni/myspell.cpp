@@ -1,7 +1,10 @@
 #include <jni.h>
+#include <android/log.h>
 #include <string.h>
 
 #include "../myspell/myspell.hxx"
+
+extern "C" {
 
 MySpell *pMySpell;
 
@@ -14,6 +17,7 @@ Java_com_nd_sdp_android_app_MySpell_init(JNIEnv *env, jobject instance, jstring 
     const char *dicPath = env->GetStringUTFChars(dicPath_, 0);
     const char *affPath = env->GetStringUTFChars(affPath_, 0);
 
+    __android_log_print(ANDROID_LOG_DEBUG, "my-spell-jni", dicPath);
     pMySpell = new MySpell(affPath, dicPath);
 
     env->ReleaseStringUTFChars(dicPath_, dicPath);
@@ -23,31 +27,37 @@ Java_com_nd_sdp_android_app_MySpell_init(JNIEnv *env, jobject instance, jstring 
 /**
  * 检测
  */
-JNIEXPORT jobjectArray JNICALL
-Java_com_nd_sdp_android_app_MySpell_check(JNIEnv *env, jobject instance, jstring words_) {
-    const char *words = env->GetStringUTFChars(words_, 0);
+JNIEXPORT jboolean JNICALL
+Java_com_nd_sdp_android_app_MySpell_check(JNIEnv *env, jobject instance, jstring word_) {
+    const char *word = env->GetStringUTFChars(word_, 0);
 
-    env->ReleaseStringUTFChars(words_, words);
+    int result = pMySpell->spell(word);
+
+    env->ReleaseStringUTFChars(word_, word);
+
+    return (jboolean) result;
 }
 
 /**
  * 建议
  */
 JNIEXPORT jobjectArray JNICALL
-Java_com_nd_sdp_android_app_MySpell_suggestion(JNIEnv *env, jobject instance, jstring words_) {
-    const char *words = env->GetStringUTFChars(words_, 0);
+Java_com_nd_sdp_android_app_MySpell_suggestion(JNIEnv *env, jobject instance, jstring word_) {
+    const char *word = env->GetStringUTFChars(word_, 0);
 
-    env->ReleaseStringUTFChars(words_, words);
+    char** suggestions;
+    int suggestionLength = pMySpell->suggest(&suggestions, word);
+    jclass stringClass = env->FindClass("java/lang/String");
+
+    jobjectArray suggestionJavaArray = env->NewObjectArray(suggestionLength, stringClass, 0);
+    for(int i=0; i < suggestionLength; i++) {
+        env->SetObjectArrayElement(suggestionJavaArray, i, env->NewStringUTF(suggestions[i]));
+    }
+
+    env->ReleaseStringUTFChars(word_, word);
+
+    return suggestionJavaArray;
 }
 
-/**
- * 检测并提供建议
- */
-JNIEXPORT jobjectArray JNICALL
-Java_com_nd_sdp_android_app_MySpell_checkAndSuggestion(JNIEnv *env, jobject instance,
-                                                       jstring words_) {
-    const char *words = env->GetStringUTFChars(words_, 0);
-
-    env->ReleaseStringUTFChars(words_, words);
 }
 

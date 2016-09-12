@@ -5,6 +5,7 @@
 #include <cstring>
 #include <fcntl.h>
 #include <cstdio>
+#include <android/log.h>
 
 #include "hashmgr.hxx"
 
@@ -21,6 +22,7 @@ HashMgr::HashMgr(const char * tpath)
   tablesize = 0;
   tableptr = NULL;
   int ec = load_tables(tpath);
+  __android_log_print(ANDROID_LOG_DEBUG, "my-spell-jni", "ec=%d, path=%s", ec, tpath);
   if (ec) {
     /* error condition - what should we do here */
     fprintf(stderr,"Hash Manager Error : %d\n",ec);

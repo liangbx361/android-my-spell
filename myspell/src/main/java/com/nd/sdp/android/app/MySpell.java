@@ -11,15 +11,26 @@ package com.nd.sdp.android.app;
  */
 public class MySpell {
 
+    public MySpell(String dicPath, String affPath) {
+        init(dicPath, affPath);
+    }
+
+    public String[] getSuggestion(String word) {
+        return suggestion(word);
+    }
+
+    public boolean getCheck(String word) {
+        return check(word);
+    }
+
     static {
         System.loadLibrary("myspell");
     }
 
     public native void init(String dicPath, String affPath);
 
-    public native String[] check(String words);
+    public native boolean check(String word);
 
-    public native String[] checkAndSuggestion(String words);
+    public native String[] suggestion(String word);
 
-    public native String[] suggestion(String words);
 }
