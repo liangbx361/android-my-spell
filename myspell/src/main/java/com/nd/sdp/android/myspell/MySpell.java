@@ -1,4 +1,4 @@
-package com.nd.sdp.android.app;
+package com.nd.sdp.android.myspell;
 
 /**
  * <p>Title: <／p>
@@ -12,25 +12,25 @@ package com.nd.sdp.android.app;
 public class MySpell {
 
     public MySpell(String dicPath, String affPath) {
-        init(dicPath, affPath);
+        initNative(dicPath, affPath);
     }
 
     public String[] getSuggestion(String word) {
-        return suggestion(word);
+        return suggestionNative(word);
     }
 
     public boolean getCheck(String word) {
-        return check(word);
+        return checkNative(word);
     }
 
     static {
         System.loadLibrary("myspell");
     }
 
-    public native void init(String dicPath, String affPath);
+    private native void initNative(String dicPath, String affPath);
 
-    public native boolean check(String word);
+    private native boolean checkNative(String word);
 
-    public native String[] suggestion(String word);
+    private native String[] suggestionNative(String word);
 
 }

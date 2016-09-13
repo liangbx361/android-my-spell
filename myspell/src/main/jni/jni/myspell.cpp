@@ -12,8 +12,8 @@ MySpell *pMySpell;
  * 初始化myspell
  */
 JNIEXPORT void JNICALL
-Java_com_nd_sdp_android_app_MySpell_init(JNIEnv *env, jobject instance, jstring dicPath_,
-                                         jstring affPath_) {
+Java_com_nd_sdp_android_myspell_MySpell_initNative(JNIEnv *env, jobject instance, jstring dicPath_,
+                                               jstring affPath_) {
     const char *dicPath = env->GetStringUTFChars(dicPath_, 0);
     const char *affPath = env->GetStringUTFChars(affPath_, 0);
 
@@ -28,7 +28,7 @@ Java_com_nd_sdp_android_app_MySpell_init(JNIEnv *env, jobject instance, jstring 
  * 检测
  */
 JNIEXPORT jboolean JNICALL
-Java_com_nd_sdp_android_app_MySpell_check(JNIEnv *env, jobject instance, jstring word_) {
+Java_com_nd_sdp_android_myspell_MySpell_checkNative(JNIEnv *env, jobject instance, jstring word_) {
     const char *word = env->GetStringUTFChars(word_, 0);
 
     int result = pMySpell->spell(word);
@@ -42,7 +42,7 @@ Java_com_nd_sdp_android_app_MySpell_check(JNIEnv *env, jobject instance, jstring
  * 建议
  */
 JNIEXPORT jobjectArray JNICALL
-Java_com_nd_sdp_android_app_MySpell_suggestion(JNIEnv *env, jobject instance, jstring word_) {
+Java_com_nd_sdp_android_myspell_MySpell_suggestionNative(JNIEnv *env, jobject instance, jstring word_) {
     const char *word = env->GetStringUTFChars(word_, 0);
 
     char** suggestions;

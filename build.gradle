@@ -1,4 +1,4 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: "${CONFIG_URL}/loadConfig.gradle"
 
 buildscript {
     repositories {
@@ -11,10 +11,27 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
+        maven {
+            name 'nd nexus android-public'
+            url "http://nexus.sdp.nd/nexus/content/groups/android-public/"
+        }
+        mavenCentral()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+subprojects { project ->
+    repositories {
+        maven {
+            url = "http://nexus.sdp.nd/nexus/content/groups/android-public/"
+        }
+    }
+    // conf
+    group = POM_GROUP_ID
+    version = POM_VERSION
+
+    configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
 }
